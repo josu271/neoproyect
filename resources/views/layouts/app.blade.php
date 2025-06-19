@@ -25,6 +25,7 @@
     @stack('scripts') {{-- scripts específicos de cada vista --}}
 </head>
 <body>
+    
     <div class="container">
         {{-- Flash messages --}}
         @if (session('success'))
@@ -41,5 +42,6 @@
     <footer class="text-center mt-4 mb-2">
         <p>&copy; {{ date('Y') }} NEOPROYECT. Todos los derechos reservados.</p>
     </footer>
+    
 </body>
 </html>

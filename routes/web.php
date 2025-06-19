@@ -8,6 +8,8 @@ use App\Http\Controllers\Auth\PagoController;
 use App\Http\Controllers\Auth\DeudaController;
 use App\Http\Controllers\Auth\CoberturaController;
 use App\Http\Controllers\Auth\EstadisticasController;
+use App\Http\Controllers\Auth\CiudadController;
+use App\Http\Controllers\Auth\PlanesController;
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -48,4 +50,33 @@ Route::middleware('auth')->group(function () {
 
     // Estadísticas
       Route::get('/estadisticas', [EstadisticasController::class, 'index'])->name('estadisticas.index');
+    // Ciudades
+     // Listar
+Route::get('/ciudades', [CiudadController::class, 'index'])->name('ciudades.index');
+
+// Formulario de creación
+Route::get('/ciudades/create', [CiudadController::class, 'create'])
+     ->name('ciudades.create');
+
+// Guardar nueva ciudad
+Route::post('/ciudades', [CiudadController::class, 'store'])->name('ciudades.store');
+
+// Formulario de edición
+Route::get('/ciudades/{id}/edit', [CiudadController::class, 'edit'])
+     ->name('ciudades.edit');
+
+// Actualizar ciudad
+Route::put('/ciudades/{id}', [CiudadController::class, 'update'])
+     ->name('ciudades.update');
+
+// Eliminar ciudad
+Route::delete('/ciudades/{id}', [CiudadController::class, 'destroy'])
+     ->name('ciudades.destroy');
+
+
+// Planes
+      Route::get('/planes', [PlanesController::class, 'index'])->name('planes.index');
+     Route::post('/planes', [PlanesController::class, 'store'])->name('planes.store');
+     Route::put('/planes/{id}', [PlanesController::class, 'update'])->name('planes.update');
+     Route::delete('/planes/{id}', [PlanesController::class, 'destroy'])->name('planes.destroy');
 });
