@@ -3,10 +3,21 @@
 @section('title', 'Menú Principal')
 
 @section('content')
-    <!-- Botón para abrir/cerrar el sidebar -->
-    <button class="btn btn-primary mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+   <div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- Toggle sidebar -->
+    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
         <i class="bi bi-list"></i> Menú
     </button>
+
+    <!-- Botón Cerrar sesión (derecha) -->
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="m-0">
+        @csrf
+        <button type="submit" class="btn btn-outline-danger">
+            <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+        </button>
+    </form>
+</div>
+
 
     <!-- Sidebar Offcanvas -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
