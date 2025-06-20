@@ -9,7 +9,7 @@
         <h2 class="fw-bold text-primary"><i class="bi bi-people-fill me-2"></i>Clientes</h2>
         <div>
             <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary me-2">
-                <i class="bi bi-arrow-left"></i> Retroceder
+                <i class="bi bi-arrow-left"></i> MENU
             </a>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddCliente">
                 <i class="bi bi-plus-circle"></i> Añadir Cliente

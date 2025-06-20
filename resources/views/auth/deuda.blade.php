@@ -1,59 +1,69 @@
-```blade
 {{-- File: resources/views/auth/deuda.blade.php --}}
 @extends('layouts.app')
 
-@section('title', '📋 Clientes Deudores')
+@section('title', 'Clientes Deudores')
 
 @section('content')
 <div class="container mt-5">
-    {{-- Botón para volver al Dashboard con emoji --}}
-    <div class="mb-3">
-        <a href="{{ route('dashboard') }}" class="btn btn-light border">
-            🔙 ¡Volver al Dashboard!
+    {{-- Volver al Dashboard --}}
+    <div class="mb-4">
+        <a href="{{ url()->previous() }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle me-2"></i> Volver
         </a>
     </div>
 
-    <div class="card border-info shadow-sm">
-        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">📊 Lista de Clientes con Deuda</h4>
-            <span class="badge bg-warning text-dark">
-                ¡Revisa aquí! ⚠️
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white d-flex align-items-center border-bottom">
+            <i class="bi bi-file-earmark-minus-fill fs-3 text-danger me-3"></i>
+            <h4 class="mb-0 fw-bold text-secondary">Listado de Clientes Deudores</h4>
+            <span class="badge bg-warning text-dark ms-auto">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i> ¡Revisar deuda!
             </span>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover text-center align-middle">
-                    <thead class="table-info">
-                        <tr>
-                            <th>#️⃣</th>
-                            <th>👤 Nombre</th>
-                            <th>🔔 Estado Suscripción</th>
-                            <th>🗓️ Mes(es) Adeudado(s)</th>
-                            <th>📍 Ubicación</th>
-                            <th>⚙️ Acciones</th>
+                <table class="table table-striped table-hover align-middle text-center">
+                    <thead class="table-light">
+                        <tr class="text-uppercase">
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Estado Suscripción</th>
+                            <th scope="col">Meses Adeudados</th>
+                            <th scope="col">Ubicación</th>
+                            <th scope="col">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($clientesDeudores as $i => $cliente)
                         <tr>
                             <td>{{ $i + 1 }}</td>
-                            <td>{{ $cliente->NombreCliente }} {{ $cliente->ApellidopCliente }}</td>
+                            <td class="text-start">{{ $cliente->NombreCliente }} {{ $cliente->ApellidopCliente }}</td>
                             <td>
-                                @if($cliente->suscripcion->Estado == 'Activa') ❤️
-                                @else ❌ @endif
-                                {{ $cliente->suscripcion->Estado }}
+                                @if($cliente->suscripcion->Estado == 'Activa')
+                                    <i class="bi bi-heart-fill text-success me-1"></i>
+                                    <span class="text-success">Activa</span>
+                                @else
+                                    <i class="bi bi-x-circle-fill text-danger me-1"></i>
+                                    <span class="text-danger">Inactiva</span>
+                                @endif
                             </td>
-                            <td>🕒 {{ implode(', ', $cliente->owedMonths) }}</td>
-                            <td>📌 {{ $cliente->UbicacionCliente }}</td>
                             <td>
-                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCliente{{ $cliente->idClientes }}">
-                                    👀 Ver Detalles
+                                @foreach($cliente->owedMonths as $month)
+                                    <span class="badge bg-secondary me-1">{{ $month }}</span>
+                                @endforeach
+                            </td>
+                            <td>{{ $cliente->UbicacionCliente }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalCliente{{ $cliente->idClientes }}">
+                                    <i class="bi bi-eye-fill"></i> Ver
                                 </button>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6">✅ ¡No hay clientes deudores! 🎉</td>
+                            <td colspan="6" class="text-success">
+                                <i class="bi bi-check-circle-fill me-2"></i> No hay clientes deudores
+                            </td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -62,28 +72,38 @@
         </div>
     </div>
 
-    {{-- Modals con detalles y mapa --}}
+    {{-- Modales de detalle con mapa --}}
     @foreach($clientesDeudores as $cliente)
     <div class="modal fade" id="modalCliente{{ $cliente->idClientes }}" tabindex="-1" aria-hidden="true" data-ubic="{{ $cliente->UbicacionCliente }}">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title">👤 Detalle de {{ $cliente->NombreCliente }} {{ $cliente->ApellidopCliente }}</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <div class="modal-header bg-white border-bottom">
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-person-lines-fill me-2 text-info"></i>
+                        Detalle de {{ $cliente->NombreCliente }} {{ $cliente->ApellidopCliente }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <ul class="list-group mb-3">
-                        <li class="list-group-item">🔢 <strong>DNI:</strong> {{ $cliente->DNI }}</li>
-                        <li class="list-group-item">📞 <strong>Teléfono:</strong> {{ $cliente->TelefonoCliente }}</li>
-                        <li class="list-group-item">🏠 <strong>Ubicación:</strong> {{ $cliente->UbicacionCliente }}</li>
-                        <li class="list-group-item">🟢 <strong>Estado Cliente:</strong> {{ $cliente->ActivoCliente }}</li>
-                        <li class="list-group-item">💳 <strong>Estado Suscripción:</strong> {{ $cliente->suscripcion->Estado }}</li>
-                        <li class="list-group-item">⏳ <strong>Mes(es) Adeudado(s):</strong> {{ implode(', ', $cliente->owedMonths) }}</li>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item"><strong>DNI:</strong> {{ $cliente->DNI }}</li>
+                        <li class="list-group-item"><strong>Teléfono:</strong> {{ $cliente->TelefonoCliente }}</li>
+                        <li class="list-group-item"><strong>Ubicación:</strong> {{ $cliente->UbicacionCliente }}</li>
+                        <li class="list-group-item"><strong>Estado Cliente:</strong> {{ $cliente->ActivoCliente }}</li>
+                        <li class="list-group-item"><strong>Estado Suscripción:</strong> {{ $cliente->suscripcion->Estado }}</li>
+                        <li class="list-group-item">
+                            <strong>Meses Adeudados:</strong>
+                            @foreach($cliente->owedMonths as $month)
+                                <span class="badge bg-secondary me-1">{{ $month }}</span>
+                            @endforeach
+                        </li>
                     </ul>
-                    <div id="map{{ $cliente->idClientes }}" style="height:300px; width:100%;" class="rounded"></div>
+                    <div id="map{{ $cliente->idClientes }}" style="height: 300px; width: 100%;" class="rounded"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ Cerrar</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
                 </div>
             </div>
         </div>
@@ -92,8 +112,8 @@
 </div>
 
 {{-- Leaflet JS/CSS --}}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha512-sA+z0p5H..." crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha512-kZUN3..." crossorigin=""></script>
 <script>
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('shown.bs.modal', () => {
@@ -115,4 +135,3 @@
         });
     });
 </script>
-```

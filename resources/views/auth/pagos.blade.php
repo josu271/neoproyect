@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-success"><i class="bi bi-cash-coin me-2"></i>Pagos</h2>
         <div>
-            <button class="btn btn-outline-secondary me-2" onclick="window.location.href='{{ route('dashboard') }}'"><i class="bi bi-arrow-left"></i> Retroceder</button>
+            <button class="btn btn-outline-secondary me-2" onclick="window.location.href='{{ route('dashboard') }}'"><i class="bi bi-arrow-left"></i> MENU</button>
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalProcessPagos"><i class="bi bi-plus-circle"></i> Añadir Pago</button>
         </div>
     </div>

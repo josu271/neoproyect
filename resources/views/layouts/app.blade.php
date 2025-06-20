@@ -42,6 +42,7 @@
     <footer class="text-center mt-4 mb-2">
         <p>&copy; {{ date('Y') }} NEOPROYECT. Todos los derechos reservados.</p>
     </footer>
-    
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+@stack('scripts')
 </body>
 </html>

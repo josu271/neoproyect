@@ -5,14 +5,14 @@
 @section('content')
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold mb-0">Cobertura de Servicio</h2>
+        <h2 class="fw-bold mb-0">📡Cobertura de Servicio</h2>
         <div>
             <!-- Botón que abre el modal de agregar -->
             <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#modalAgregarCobertura">
                 <i class="bi bi-plus-lg"></i> Agregar
             </button>
             <a href="{{ route('dashboard') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Volver
+                <i class="bi bi-arrow-left"></i> MENU
             </a>
         </div>
     </div>

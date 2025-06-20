@@ -32,10 +32,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/pagos/{id}', [PagoController::class,'update'])->name('pagos.update');
     Route::post('/pagos/process', [PagoController::class,'process'])->name('pagos.process');
 
-    // EMPLEADOS
-    Route::get('/empleados', [EmpleadoController::class, 'index'])->name('empleados.index');
-    Route::post('/empleados', [EmpleadoController::class, 'store'])->name('empleados.store');
-    Route::put('/empleados/{id}', [EmpleadoController::class, 'update'])->name('empleados.update');
+   // EMPLEADOS
+// EMPLEADOS
+Route::get('/empleados',   [EmpleadoController::class, 'index'])->name('empleados.index');
+Route::post('/empleados',  [EmpleadoController::class, 'store'])->name('empleados.store');
+Route::match(['put','patch'], '/empleados/{id}', [EmpleadoController::class, 'update'])
+     ->name('empleados.update');
+Route::delete('/empleados/{id}', [EmpleadoController::class, 'destroy'])
+     ->name('empleados.destroy');
 
     // Deuda Masiva
     Route::get('/deuda', [DeudaController::class, 'index'])->name('deuda.index');
