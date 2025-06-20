@@ -21,7 +21,7 @@ class PlanesController extends Controller
             ->orderBy('idPlan', 'asc')
             ->paginate(10);
 
-        return view('auth.Planes', compact('planes'));
+        return view('auth.planes', compact('planes'));
     }
 
     /**

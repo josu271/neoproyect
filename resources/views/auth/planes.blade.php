@@ -8,7 +8,7 @@
         <h2 class="fw-bold">Planes</h2>
         <div>
             <a href="{{ route('dashboard') }}" class="btn btn-secondary me-2">
-                <i class="bi bi-arrow-left-circle"></i> Volver
+                <i class="bi bi-arrow-left-circle"></i> menu
             </a>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createPlanModal">
                 <i class="bi bi-plus-circle"></i> Agregar Plan
