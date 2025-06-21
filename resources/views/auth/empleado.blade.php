@@ -116,7 +116,13 @@
           </div>
           <div class="col-md-6">
             <label class="form-label">Rol</label>
-            <input type="text" class="form-control" name="RolEmpleado">
+            <select class="form-select" name="RolEmpleado" required>
+              <option value="">-- Selecciona un rol --</option>
+              <option value="ADMINISTRADOR">ADMINISTRADOR</option>
+              <option value="ATENCION AL CLIENTE">ATENCIÓN AL CLIENTE</option>
+              <option value="COBRADOR">COBRADOR</option>
+              <option value="TECNICO">TÉCNICO</option>
+            </select>
           </div>
           <div class="col-12">
             <label class="form-label">Contraseña</label>
@@ -177,7 +183,13 @@
           </div>
           <div class="col-md-6">
             <label class="form-label">Rol</label>
-            <input type="text" class="form-control" id="edit-rol" name="RolEmpleado">
+            <select class="form-select" id="edit-rol" name="RolEmpleado" required>
+              <option value="">-- Selecciona un rol --</option>
+              <option value="ADMINISTRADOR">ADMINISTRADOR</option>
+              <option value="ATENCION AL CLIENTE">ATENCIÓN AL CLIENTE</option>
+              <option value="COBRADOR">COBRADOR</option>
+              <option value="TECNICO">TÉCNICO</option>
+            </select>
           </div>
           <div class="col-12">
             <label class="form-label">Contraseña (dejar en blanco para no cambiar)</label>

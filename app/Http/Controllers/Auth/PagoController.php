@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pago;
@@ -204,6 +204,30 @@ class PagoController extends Controller
             }
         }
 
-        return redirect()->route('pagos.index')->with('success', 'Pagos procesados correctamente.');
+        return redirect()->route('pagos.boleta', $tipoComprobante->nroDoc);
+
+    }
+     public function downloadBoleta($nroDoc)
+    {
+        // Obtén el comprobante
+        $comprobante = TipoComprobante::where('nroDoc', $nroDoc)->firstOrFail();
+
+        // Todos los pagos que referencian este comprobante
+        $pagos = Pago::with(['cliente'])
+                     ->where('idTipoComprobante', $comprobante->idTipoComprobante)
+                     ->get();
+
+        // Cliente único (asumo que todos comparten el mismo cliente)
+        $cliente = $pagos->first()->cliente;
+
+        $fecha = now()->format('d/m/Y H:i');
+
+        $data = compact('pagos', 'cliente', 'nroDoc', 'fecha');
+
+        // Genera el PDF con papel 80 mm × altura automática
+        $pdf = PDF::loadView('auth.boleta', $data)
+                  ->setPaper([0, 0, 80, 300 + $pagos->count() * 15], 'portrait');
+
+        return $pdf->download("boleta_{$nroDoc}.pdf");
     }
 }
