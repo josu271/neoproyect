@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Boleta 80 mm</title>
+  <title>Boleta</title>
   <style>
    @page {
   margin: 1mm; 
@@ -54,8 +54,10 @@ h4, p { margin: 0; padding: 0; }
       @foreach($pagos as $pago)
       <tr>
         <td class="text-center">1</td>
-        <td>Pago {{ $pago->PeriodoMes }}</td>
+        <td>{{ $pago->descripcion }} {{ $pago->PeriodoMes }}</td>
+
         <td class="text-right">{{ number_format($pago->metodoPago->Monto ?? 0, 2) }}</td>
+        
       </tr>
       @endforeach
     </tbody>

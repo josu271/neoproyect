@@ -74,7 +74,6 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
-                <!-- Aquí añadimos ID al form -->
                 <form id="formProcessPagos" method="POST" action="{{ route('pagos.process') }}">
                     @csrf
                     <div class="modal-body">
@@ -140,7 +139,6 @@
                     </div>
 
                     <div class="modal-footer">
-                        <!-- Al botón le añadimos data-bs-dismiss -->
                         <button id="btnProcesar" type="submit" class="btn btn-success" data-bs-dismiss="modal">
                             Procesar Pagos Seleccionados
                         </button>
@@ -152,17 +150,15 @@
 </div>
 
 <script>
-    // Datos iniciales
-    const pagos           = @json($pagosPendientes);
-    const tablaBody       = document.getElementById('tablaPagosCliente');
-    const btnAddRow       = document.getElementById('btnAddRow');
-    let   filaExtraCont   = 0;
+    const pagos         = @json($pagosPendientes);
+    const tablaBody     = document.getElementById('tablaPagosCliente');
+    const btnAddRow     = document.getElementById('btnAddRow');
+    let   filaExtraCont = 0;
 
-    // Buscar cliente => mostrar pagos
     document.getElementById('clienteInput').addEventListener('input', function () {
-        const val      = this.value;
-        const options  = document.querySelectorAll('#clientesList option');
-        let idCliente  = null;
+        const val     = this.value;
+        const options = document.querySelectorAll('#clientesList option');
+        let idCliente = null;
         options.forEach(opt => { if (opt.value === val) idCliente = opt.dataset.id; });
         if (!idCliente) return;
 
@@ -177,17 +173,21 @@
         document.getElementById('pagosPendientesCliente').style.display = 'block';
     });
 
-    // Agregar fila manual vacía
     btnAddRow?.addEventListener('click', () => {
         filaExtraCont--;
         agregarFilaPago(filaExtraCont, 'N/A', '', 'Pago mensual', true);
     });
 
-    function agregarFilaPago(id, periodo, monto, descripcion, checked){
+    function agregarFilaPago(id, periodo, monto, descripcion, checked) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td class="align-middle text-center">
-              <input type="text" class="form-control form-control-sm text-center" value="${periodo}" readonly tabindex="-1" style="background:#f9f9f9">
+              <input type="text"
+                     name="periodos[${id}]"
+                     class="form-control form-control-sm text-center"
+                     value="${periodo}"
+                     readonly tabindex="-1"
+                     style="background:#f9f9f9">
             </td>
             <td>
               <input type="number" step="0.01" min="0" name="montos[${id}]" value="${monto}" class="form-control form-control-sm">
@@ -202,13 +202,11 @@
         tablaBody.appendChild(tr);
     }
 
-    // 1) Al enviar el form, abrimos el PDF en nueva pestaña
     const form = document.getElementById('formProcessPagos');
     form.addEventListener('submit', function () {
       this.target = '_blank';
     });
 
-    // 2) Cuando el modal termine de cerrarse, recargamos la página
     const modalEl = document.getElementById('modalProcessPagos');
     modalEl.addEventListener('hidden.bs.modal', function () {
       window.location.reload();
