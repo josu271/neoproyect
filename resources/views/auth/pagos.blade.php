@@ -8,8 +8,12 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-success"><i class="bi bi-cash-coin me-2"></i>Pagos</h2>
         <div>
-            <button class="btn btn-outline-secondary me-2" onclick="window.location.href='{{ route('dashboard') }}'"><i class="bi bi-arrow-left"></i> MENU</button>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalProcessPagos"><i class="bi bi-plus-circle"></i> Añadir Pago</button>
+            <button class="btn btn-outline-secondary me-2" onclick="window.location.href='{{ route('dashboard') }}'">
+                <i class="bi bi-arrow-left"></i> MENU
+            </button>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalProcessPagos">
+                <i class="bi bi-plus-circle"></i> Añadir Pago
+            </button>
         </div>
     </div>
 
@@ -29,22 +33,30 @@
                             <th>Fecha Pago</th>
                             <th>Periodo</th>
                             <th>Estado</th>
+                            <th>PDF</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($pagos as $pago)
                             @if($pago->ActivoPago === 'Pago')
-                        <tr>
-                            <td>{{ $pago->idPagos }}</td>
-                            <td>{{ optional($pago->empleado)->NombreEmpleado }} {{ optional($pago->empleado)->ApellidopEmpleado }} {{ optional($pago->empleado)->ApellidomEmpleado }}</td>
-                            <td>{{ optional($pago->cliente)->NombreCliente }} {{ optional($pago->cliente)->ApellidopCliente }} {{ optional($pago->cliente)->ApellidomCliente }}</td>
-                            <td>{{ optional($pago->tipoComprobante)->tipoDoc ?? '-' }}</td>
-                            <td>{{ optional($pago->metodoPago)->tipoPago ?? '-' }}</td>
-                            <td>{{ optional($pago->metodoPago)->Monto ? number_format($pago->metodoPago->Monto, 2) : '-' }}</td>
-                            <td>{{ $pago->FechaPago }}</td>
-                            <td>{{ $pago->PeriodoMes }}</td>
-                            <td><span class="badge bg-success">Pago</span></td>
-                        </tr>
+                                <tr>
+                                    <td>{{ $pago->idPagos }}</td>
+                                    <td>{{ optional($pago->empleado)->NombreEmpleado }} {{ optional($pago->empleado)->ApellidopEmpleado }} {{ optional($pago->empleado)->ApellidomEmpleado }}</td>
+                                    <td>{{ optional($pago->cliente)->NombreCliente }} {{ optional($pago->cliente)->ApellidopCliente }} {{ optional($pago->cliente)->ApellidomCliente }}</td>
+                                    <td>{{ optional($pago->tipoComprobante)->tipoDoc ?? '-' }}</td>
+                                    <td>{{ optional($pago->metodoPago)->tipoPago ?? '-' }}</td>
+                                    <td>{{ optional($pago->metodoPago)->Monto ? number_format($pago->metodoPago->Monto, 2) : '-' }}</td>
+                                    <td>{{ $pago->FechaPago }}</td>
+                                    <td>{{ $pago->PeriodoMes }}</td>
+                                    <td><span class="badge bg-success">Pago</span></td>
+                                    <td>
+                                        <a href="{{ route('pagos.boleta', optional($pago->tipoComprobante)->nroDoc) }}"
+                                           target="_blank"
+                                           class="text-danger">
+                                            <i class="bi bi-file-earmark-pdf-fill fs-5"></i>
+                                        </a>
+                                    </td>
+                                </tr>
                             @endif
                         @endforeach
                     </tbody>
@@ -61,7 +73,9 @@
                     <h5 class="modal-title"><i class="bi bi-cash-stack me-2"></i>Procesar Pagos Pendientes</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="POST" action="{{ route('pagos.process') }}">
+
+                <!-- Aquí añadimos ID al form -->
+                <form id="formProcessPagos" method="POST" action="{{ route('pagos.process') }}">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-4">
@@ -69,7 +83,8 @@
                             <input list="clientesList" id="clienteInput" class="form-control" placeholder="Nombre del cliente...">
                             <datalist id="clientesList">
                                 @foreach($clientes as $cliente)
-                                    <option data-id="{{ $cliente->idClientes }}" value="{{ $cliente->NombreCliente }} {{ $cliente->ApellidopCliente }} {{ $cliente->ApellidomCliente }}">
+                                    <option data-id="{{ $cliente->idClientes }}"
+                                            value="{{ $cliente->NombreCliente }} {{ $cliente->ApellidopCliente }} {{ $cliente->ApellidomCliente }}">
                                 @endforeach
                             </datalist>
                             <input type="hidden" id="idClientesHidden">
@@ -78,7 +93,9 @@
                         <div id="pagosPendientesCliente" class="mb-4" style="display:none;">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <h5 class="mb-0">Pagos pendientes de <span id="nombreCliente"></span></h5>
-                                <button type="button" id="btnAddRow" class="btn btn-sm btn-outline-primary"><i class="bi bi-plus"></i> Agregar fila</button>
+                                <button type="button" id="btnAddRow" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-plus"></i> Agregar fila
+                                </button>
                             </div>
                             <input type="hidden" name="idClientes" id="idClientesInput">
                             <table class="table table-sm table-bordered" id="tablaPagosPendientes">
@@ -119,10 +136,14 @@
                                     <input type="hidden" name="idEmpleado" value="{{ auth()->user()->idEmpleado ?? '' }}">
                                 </div>
                             </div>
-                            <div class="text-end mt-3">
-                                <button type="submit" class="btn btn-success">Procesar Pagos Seleccionados</button>
-                            </div>
                         </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <!-- Al botón le añadimos data-bs-dismiss -->
+                        <button id="btnProcesar" type="submit" class="btn btn-success" data-bs-dismiss="modal">
+                            Procesar Pagos Seleccionados
+                        </button>
                     </div>
                 </form>
             </div>
@@ -131,10 +152,11 @@
 </div>
 
 <script>
+    // Datos iniciales
     const pagos           = @json($pagosPendientes);
     const tablaBody       = document.getElementById('tablaPagosCliente');
     const btnAddRow       = document.getElementById('btnAddRow');
-    let   filaExtraCont   = 0;   // contador para filas nuevas (IDs negativos)
+    let   filaExtraCont   = 0;
 
     // Buscar cliente => mostrar pagos
     document.getElementById('clienteInput').addEventListener('input', function () {
@@ -144,35 +166,52 @@
         options.forEach(opt => { if (opt.value === val) idCliente = opt.dataset.id; });
         if (!idCliente) return;
 
-        // limpiar
         tablaBody.innerHTML = '';
 
-        // render pagos existentes
         const pagosCliente = pagos.filter(p => p.idClientes == idCliente);
         pagosCliente.forEach(p => agregarFilaPago(p.idPagos, p.PeriodoMes, p.monto_defecto ?? '0.00', 'Pago mensual', false));
 
-        // actualizar campos ocultos
-        document.getElementById('idClientesHidden').value  = idCliente;
-        document.getElementById('idClientesInput').value   = idCliente;
+        document.getElementById('idClientesHidden').value    = idCliente;
+        document.getElementById('idClientesInput').value     = idCliente;
         document.getElementById('nombreCliente').textContent = val;
         document.getElementById('pagosPendientesCliente').style.display = 'block';
     });
 
     // Agregar fila manual vacía
     btnAddRow?.addEventListener('click', () => {
-        filaExtraCont--;// ids negativos
+        filaExtraCont--;
         agregarFilaPago(filaExtraCont, 'N/A', '', 'Pago mensual', true);
     });
 
     function agregarFilaPago(id, periodo, monto, descripcion, checked){
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td class="align-middle text-center"><input type="text" class="form-control form-control-sm text-center" value="${periodo}" readonly tabindex="-1" style="background:#f9f9f9"></td>
-            <td><input type="number" step="0.01" min="0" name="montos[${id}]" value="${monto}" class="form-control form-control-sm"></td>
-            <td><input type="text" name="descripciones[${id}]" value="${descripcion}" class="form-control form-control-sm"></td>
-            <td class="text-center"><input type="checkbox" name="pagos[]" value="${id}" ${checked?'checked':''}></td>
+            <td class="align-middle text-center">
+              <input type="text" class="form-control form-control-sm text-center" value="${periodo}" readonly tabindex="-1" style="background:#f9f9f9">
+            </td>
+            <td>
+              <input type="number" step="0.01" min="0" name="montos[${id}]" value="${monto}" class="form-control form-control-sm">
+            </td>
+            <td>
+              <input type="text" name="descripciones[${id}]" value="${descripcion}" class="form-control form-control-sm">
+            </td>
+            <td class="text-center">
+              <input type="checkbox" name="pagos[]" value="${id}" ${checked?'checked':''}>
+            </td>
         `;
         tablaBody.appendChild(tr);
     }
+
+    // 1) Al enviar el form, abrimos el PDF en nueva pestaña
+    const form = document.getElementById('formProcessPagos');
+    form.addEventListener('submit', function () {
+      this.target = '_blank';
+    });
+
+    // 2) Cuando el modal termine de cerrarse, recargamos la página
+    const modalEl = document.getElementById('modalProcessPagos');
+    modalEl.addEventListener('hidden.bs.modal', function () {
+      window.location.reload();
+    });
 </script>
 @endsection

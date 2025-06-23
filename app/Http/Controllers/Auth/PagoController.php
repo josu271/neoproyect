@@ -95,7 +95,7 @@ class PagoController extends Controller
             ]);
         }
 
-        return redirect()->route('pagos.index')->with('success', 'Pago registrado correctamente.');
+        return redirect()->route('pagos.boleta', $tipoComprobante->nroDoc);
     }
 
     public function update(Request $request, $id)
@@ -198,7 +198,7 @@ class PagoController extends Controller
                     'idTipoComprobante' => $tipoComprobante->idTipoComprobante,
                     'idMetodoPago' => $metodoPago->idMetodoPago,
                     'FechaPago' => $request->FechaPago,
-                    'PeriodoMes' => now()->format('Y-m'), // podría personalizarse si se requiere
+                    'PeriodoMes' => now()->format('Y-m'),
                     'ActivoPago' => 'Pago'
                 ]);
             }
@@ -223,11 +223,12 @@ class PagoController extends Controller
         $fecha = now()->format('d/m/Y H:i');
 
         $data = compact('pagos', 'cliente', 'nroDoc', 'fecha');
-
-        // Genera el PDF con papel 80 mm × altura automática
-        $pdf = PDF::loadView('auth.boleta', $data)
-                  ->setPaper([0, 0, 80, 300 + $pagos->count() * 15], 'portrait');
-
+        $alto = 200 + ($pagos->count() * 20);
+$pdf = PDF::loadView('auth.boleta', $data)
+          ->setPaper([0, 0, 226.77, $alto], 'portrait');
         return $pdf->download("boleta_{$nroDoc}.pdf");
+    }
+    public function pdf(){
+        
     }
 }
